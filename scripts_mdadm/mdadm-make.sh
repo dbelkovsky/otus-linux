@@ -1,4 +1,6 @@
 #!/bin/bash
+
+
 #Создаем raid6
 
 #Переходим в режим суперпользователя
@@ -17,5 +19,6 @@ echo "DEVICE partitions" > /etc/mdadm/mdadm.conf
 #Передаем в файл вывод команды mdadm 
 mdadm --detail --scan --verbose | awk '/ARRAY/ {print}' >> /etc/mdadm/mdadm.conf
 
-
+#вывод программой
+lsblk
 
