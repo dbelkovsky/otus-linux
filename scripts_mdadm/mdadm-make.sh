@@ -18,6 +18,8 @@ mkdir /etc/mdadm
 echo "DEVICE partitions" > /etc/mdadm/mdadm.conf
 #Передаем в файл вывод команды mdadm 
 mdadm --detail --scan --verbose | awk '/ARRAY/ {print}' >> /etc/mdadm/mdadm.conf
+# Вывод командой 
+lsblk
 
 #вывод программой
 lsblk
