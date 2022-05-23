@@ -1,0 +1,12 @@
+Log created: 2022-05-10T11:54:29.897172000Z
+Process ID:  9499 (0x251b)
+Parent PID:  1 (0x1)
+Executable:  /usr/lib/virtualbox/VBoxHeadless
+Arg[0]: /usr/lib/virtualbox/VBoxHeadless
+Arg[1]: --comment
+Arg[2]: otus-linux_otuslinux_1652041497332_65229
+Arg[3]: --startvm
+Arg[4]: 0e2f772b-068f-4d53-b25f-63aea856bebb
+Arg[5]: --vrde
+Arg[6]: config
+AddRef: illegal refcnt=3221225469 state=2
