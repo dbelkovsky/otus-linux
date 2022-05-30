@@ -1,0 +1,12 @@
+Log created: 2022-05-30T04:35:59.035141000Z
+Process ID:  21934 (0x55ae)
+Parent PID:  1 (0x1)
+Executable:  /usr/lib/virtualbox/VBoxHeadless
+Arg[0]: /usr/lib/virtualbox/VBoxHeadless
+Arg[1]: --comment
+Arg[2]: rpm_rpm_1653879627855_18057
+Arg[3]: --startvm
+Arg[4]: 75a411a2-96bc-4156-9e76-5c9063b237b6
+Arg[5]: --vrde
+Arg[6]: config
+AddRef: illegal refcnt=3221225469 state=2
