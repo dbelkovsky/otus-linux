@@ -101,3 +101,54 @@ sdd                     8:48   0    1G  0 disk
 
 sde                     8:64   0    1G  0 disk 
 
+3. Добавить модуль в initrd:
+
+Скрипты модулей хранятся в каталоге /usr/lib/dracut/modules.d/. 
+
+Для того чтобы добавить свой модуль создаем там папку с именем 01test, mkdir /usr/lib/dracut/modules.d/01test
+
+Далее создаем там 2 скрипта - module-setup.sh и test.sh, делаем их исполняемыми chmod +x. В скрипт module-setup.sh вписываем:
+
+#!/bin/bash
+
+check() { # Функция, которая указывает что модуль должен быть включен по умолчанию
+    return 0
+}
+
+depends() { # Выводит все зависимости от которых зависит наш модуль
+    return 0
+}
+
+install() {
+    inst_hook cleanup 00 "${moddir}/test.sh" # Запускает скрипт
+}
+
+В файле test.sh:
+
+#!/bin/bash
+
+cat <<'msgend'
+Hello! You are in dracut module!
+```
+___________________
+< I'm dracut module >
+ -------------------
+   \
+    \
+        .--.
+       |o_o |
+       |:_/ |
+      //   \ \
+     (|     | )
+    /'\_   _/`\
+    \___)=(___/
+
+msgend
+
+sleep 10
+
+echo " continuing...."
+```
+Далее выполняем команду dracut -f -v
+
+Перезагружаемся и видим пингвина
