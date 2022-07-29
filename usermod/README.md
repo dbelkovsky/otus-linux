@@ -3,7 +3,7 @@
 
 - Правим конфиг: /etc/pam.d/sshd
 
-
+```
 [root@usermod]# vi /etc/pam.d/sshd
 #%PAM-1.0
 auth       required     pam_sepermit.so
@@ -27,10 +27,11 @@ session    include      password-auth
 session    include      postlogin
 # Used with polkit to reauthorize users in remote sessions
 -session   optional     pam_reauthorize.so prepare
-
+```
 
 - Правим конфиг: /etc/pam.d/login
 
+```
 [root@usermod]# vi /etc/pam.d/login
 #%PAM-1.0
 auth [user_unknown=ignore success=ok ignore=ignore default=bad] pam_securetty.so
@@ -52,7 +53,7 @@ session    optional     pam_keyinit.so force revoke
 session    include      system-auth
 session    include      postlogin
 -session   optional     pam_ck_connector.so
-
+```
 
 - Затем vi /etc/security/time.conf и добавляем в конце файла строку
 
@@ -71,16 +72,18 @@ useradd user1
 passwd 132
 
 - Пытаемся зайти в тот день, когда у нас работает правило и получаем:
+```
 [root@usermod]# ssh user1@localhost
 user1@localhost's password:
 Authentication failed.
-
+```
 2. Не сложно добавить права пользователю для управления докером.
 нужно добавить его в группу docker и сделать релогин и тогда он сможет рестартовать и запускать докер.
-
+```
 usermod -aG docker user1
 cat /etc/group | grep docker
 docker:x:998:user1
 
 logout
 login
+```
