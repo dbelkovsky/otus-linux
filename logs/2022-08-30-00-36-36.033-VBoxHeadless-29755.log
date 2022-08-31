@@ -1,0 +1,12 @@
+Log created: 2022-08-30T00:36:36.335731000Z
+Process ID:  29755 (0x743b)
+Parent PID:  1 (0x1)
+Executable:  /usr/lib/virtualbox/VBoxHeadless
+Arg[0]: /usr/lib/virtualbox/VBoxHeadless
+Arg[1]: --comment
+Arg[2]: logs_ansiblecontroller_1661818530915_16088
+Arg[3]: --startvm
+Arg[4]: ac14b5e2-81db-47f3-aaea-f184be27abc2
+Arg[5]: --vrde
+Arg[6]: config
+AddRef: illegal refcnt=3221225469 state=2
