@@ -17,7 +17,7 @@ Vagrantfile + ansible
 - Сделан Vagrantfile и ansible плейбуки, раворачиваюшие машины-роутеры r1,r2 и r3. За роутерами есть приватные подсети 172.20.10.1/24, 172.20.20.1/24 и 172.20.30.1/24 соответственно, которые надо объединить с помощью ospf. Для этого соединяем роутеры сетями и настраиваем quagga.
 
 
- ![Image 1](https://raw.githubusercontent.com/dbelkovsky/otus-linux/tree/master/net_ospf/pic/web.png) 
+ ![Image 1](https://github.com/dbelkovsky/otus-linux/blob/master/net_ospf/pic/web.png) 
  
 Маршруты получаются следующими:
 ```
