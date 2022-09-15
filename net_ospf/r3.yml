@@ -1,0 +1,95 @@
+---
+- name: Setup ospf
+  hosts: r3
+  become: yes
+
+  vars:
+    router_name: 'r3'
+    eth2_cost: '10'
+    eth3_cost: '10'
+    router_area: '0.0.0.3'
+    area_0_network1: '192.168.100.0/30'
+    area_0_network2: '192.168.200.0/30'
+    area_cidr: '172.20.30.0/24'
+
+  
+  
+  tasks:
+    - name: Add epel-release repo
+      yum:
+        name: epel-release
+        state: present
+        
+    - name: disable ssl for repo epel
+      lineinfile: 
+        dest: /etc/yum.repos.d/epel.repo
+        insertafter: 'enabled=1'
+        line: 'sslverify=0'
+        
+    - name: Add quagga
+      yum:
+        name: quagga
+        state: present
+        
+    - name: Put SELinux in permissive mode, logging actions that would be blocked.
+      selinux:
+        policy: targeted
+        state: permissive
+
+    - name: edit sysctl ip_forward
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: yes
+        state: present
+        reload: yes
+
+    - name: edit sysctl rp_filter
+      sysctl:
+        name: net.ipv4.conf.all.rp_filter
+        value: '0'
+        sysctl_set: yes
+        state: present
+        reload: yes
+        
+        
+    - name: Manage zebra conf
+      template:
+        src: conf/zebra.conf.j2
+        dest: /etc/quagga/zebra.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify: restart zebra
+
+    - name: Manage ospfd conf
+      template:
+        src: conf/ospfd.conf.j2
+        dest: /etc/quagga/ospfd.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify: restart ospfd
+      
+    - name: daemon started
+      systemd:
+        name: zebra
+        state: started
+        enabled: yes
+
+       
+    - name: demon started
+      systemd:
+        name: ospfd
+        state: started
+        enabled: yes
+        
+  handlers:
+  - name: restart zebra
+    service:
+      name: zebra
+      state: restarted
+  - name: restart ospfd
+    service:
+      name: ospfd
+      state: restarted
