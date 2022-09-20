@@ -1,0 +1,132 @@
+---
+#ovpnSO1.yml
+- name: Setup openvpn Server office1
+  hosts: openvpnServerOffice1
+  become: yes
+
+  tasks: 
+  
+  - name: Add epel-release repo
+    yum:
+      name: epel-release
+      state: present
+
+  - name: Add tcpdump
+    yum:
+      name: tcpdump
+      state: present
+        
+  - name: Add iperf3
+    yum:
+      name: iperf3
+      state: present
+        
+  - name: Add wget
+    yum:
+      name: wget
+      state: present
+        
+  - name: Add openvpn
+    yum:
+      name: openvpn
+      state: present
+        
+  - name: Add iptables-services
+    yum:
+      name: iptables-services
+      state: present
+        
+  - name: Enable iptables-service
+    systemd:
+      name: iptables.service
+      enabled: true
+      masked: no
+        
+  - name: daemon started
+    systemd:
+      name: iptables.service
+      state: started
+      enabled: yes
+  
+  #- name: Disable SELinux
+  #ansible.posix.selinux:
+      #state: disabled
+
+  - name: Disable SELinux.
+    selinux:
+      policy: targeted
+      state: disabled
+    
+#sudo setenforce 0
+           
+#sudo sed -i 's/=enforcing/=disabled/g' /etc/selinux/config
+  
+  
+  
+  - name: edit sysctl ip_forward
+    sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      sysctl_set: yes
+      state: present
+      reload: yes
+
+  - name: Iptables flush filter
+    ansible.builtin.iptables:
+      chain: "{{ item }}"
+      flush: yes
+    with_items:  [ 'INPUT', 'FORWARD', 'OUTPUT' ]
+
+  - name: Iptables flush nat
+    ansible.builtin.iptables:
+      table: nat
+      chain: '{{ item }}'
+      flush: yes
+    with_items: [ 'INPUT', 'OUTPUT', 'PREROUTING', 'POSTROUTING' ]
+
+  - name: Iptables flush mangle
+    ansible.builtin.iptables:
+      table: mangle
+      chain: '{{ item }}'
+      flush: yes
+    with_items: [ 'INPUT', 'OUTPUT', 'PREROUTING', 'POSTROUTING' ]
+     
+  #- name: Save current state of the firewall in system file
+    #ansible.builtin.command: service iptables save
+ 
+  - name: Create directory
+    file:
+      path: /var/log/openvpn
+      state: directory
+      owner: root
+      group: root
+      mode: 0775
+       
+  - name: copy config
+    template:
+      src: /vagrant/config/ras-server/server.conf
+      dest: /etc/openvpn/server.conf
+      owner: root
+      group: root
+      mode: 0644
+         
+  - name: copy config
+    template:
+      src: /vagrant/certs/server/*
+      dest: /etc/openvpn/
+      owner: root
+      group: root
+      mode: 0644
+       
+  - name: Enable openvpn
+    systemd:
+      name: openvpn.service
+      enabled: true
+      masked: no
+        
+  - name: daemon started
+    systemd:
+      name: openvpn.service
+      state: started
+      enabled: yes
+           
