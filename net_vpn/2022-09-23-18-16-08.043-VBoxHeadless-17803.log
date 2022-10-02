@@ -1,0 +1,12 @@
+Log created: 2022-09-23T18:16:08.432600000Z
+Process ID:  17803 (0x458b)
+Parent PID:  1 (0x1)
+Executable:  /usr/lib/virtualbox/VBoxHeadless
+Arg[0]: /usr/lib/virtualbox/VBoxHeadless
+Arg[1]: --comment
+Arg[2]: net_vpn_openvpnServerOffice1_1663549829772_32567
+Arg[3]: --startvm
+Arg[4]: 2b226d7d-d80d-437c-965b-db820a190b35
+Arg[5]: --vrde
+Arg[6]: config
+AddRef: illegal refcnt=3221225469 state=2

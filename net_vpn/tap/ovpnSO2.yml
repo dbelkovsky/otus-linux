@@ -1,7 +1,7 @@
 ---
 #ovpnSO1.yml
-- name: Setup openvpn Server office1
-  hosts: openvpnServerOffice1
+- name: Setup openvpn client gateway  office2
+  hosts: openvpnClientGatewayOffice2
   become: yes
 
   tasks: 
@@ -15,7 +15,17 @@
     yum:
       name: tcpdump
       state: present
-        
+ 
+  - name: Add bridge-utils
+    yum:
+      name: bridge-utils
+      state: present
+  
+  - name: Add net-tools
+    yum:
+      name: net-tools
+      state: present
+      
   - name: Add iperf3
     yum:
       name: iperf3
@@ -104,20 +114,41 @@
        
   - name: copy config
     template:
-      src: /home/bdn/git/otus-linux/net_vpn/conf/ras-server/server.conf
-      dest: /etc/openvpn/server.conf
+      src: /home/bdn/git/otus-linux/net_vpn/tap/client/client.conf
+      dest: /etc/openvpn/client.conf
       owner: root
       group: root
       mode: 0775
-         
+      
   - name: copy config
-    ansible.builtin.copy:
-      src: "{{ item }}"
-      dest: "/etc/openvpn/"
-      owner: "root"
+    template:
+      src: /home/bdn/git/otus-linux/net_vpn/tap/key/static.key
+      dest: /etc/openvpn/static.key
+      owner: root
+      group: root
       mode: 0775
-    with_fileglob:
-    - "/home/bdn/git/otus-linux/net_vpn/certs/server/*"
+
+  - name: Enable openvpn
+    systemd:
+      name: openvpn@.client
+      enabled: true
+      masked: no
+        
+  - name: daemon started
+    systemd:
+      name: openvpn@.client
+      state: started
+      enabled: yes
+           
+      
+  #- name: copy config
+    #ansible.builtin.copy:
+      #src: "{{ item }}"
+      #dest: "/etc/openvpn/"
+      #owner: "root"
+      #mode: 0775
+    #with_fileglob:
+    #- "/home/bdn/git/otus-linux/net_vpn/certs/server/*"
       
       
       
@@ -131,15 +162,3 @@
       #group: root
       #mode: 0644
        
-  - name: Enable openvpn
-    systemd:
-      name: openvpn@.server
-      enabled: true
-      masked: no
-        
-  - name: daemon started
-    systemd:
-      name: openvpn@.server
-      state: started
-      enabled: yes
-           

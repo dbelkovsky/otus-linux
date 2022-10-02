@@ -1,0 +1,57 @@
+---
+#ovpnSO1.yml
+- name: Setup openvpn office1 Computer
+  hosts: office1Computer
+  become: yes
+
+  tasks: 
+  
+  - name: Add epel-release repo
+    yum:
+      name: epel-release
+      state: present
+
+  - name: Add tcpdump
+    yum:
+      name: tcpdump
+      state: present
+        
+  - name: Add iperf3
+    yum:
+      name: iperf3
+      state: present
+        
+  - name: Add wget
+    yum:
+      name: wget
+      state: present
+        
+
+        
+
+  
+  #- name: Disable SELinux
+  #ansible.posix.selinux:
+      #state: disabled
+
+  - name: Disable SELinux.
+    selinux:
+      policy: targeted
+      state: disabled
+    
+#sudo setenforce 0
+           
+#sudo sed -i 's/=enforcing/=disabled/g' /etc/selinux/config
+  
+  
+  - name: Masquareding
+    raw: 'sudo bash -c echo "192.168.10.0/24 via 192.168.20.1 dev eth1" >> /etc/sysconfig/network-scripts/route-eth1'   
+
+  - name: Reboot host and wait for it to restart
+    reboot:
+      msg: "Reboot initiated by Ansible"
+      connect_timeout: 5
+      reboot_timeout: 600
+      pre_reboot_delay: 0
+      post_reboot_delay: 30
+      test_command: whoami

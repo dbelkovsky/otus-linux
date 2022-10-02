@@ -1,6 +1,6 @@
 ---
 #ovpnSO1.yml
-- name: Setup openvpn Server office1
+- name: Setup openvpn Server office1(TAP)
   hosts: openvpnServerOffice1
   become: yes
 
@@ -104,32 +104,21 @@
        
   - name: copy config
     template:
-      src: /home/bdn/git/otus-linux/net_vpn/conf/ras-server/server.conf
+      src: /home/bdn/git/otus-linux/net_vpn/tap/server/server.conf
       dest: /etc/openvpn/server.conf
       owner: root
       group: root
       mode: 0775
-         
+       
+       
   - name: copy config
-    ansible.builtin.copy:
-      src: "{{ item }}"
-      dest: "/etc/openvpn/"
-      owner: "root"
+    template:
+      src: /home/bdn/git/otus-linux/net_vpn/tap/key/static.key 
+      dest: /etc/openvpn/static.key
+      owner: root
+      group: root
       mode: 0775
-    with_fileglob:
-    - "/home/bdn/git/otus-linux/net_vpn/certs/server/*"
-      
-      
-      
-      
-      
-      #template:
-      #src: /home/bdn/git/otus-linux/net_vpn/certs/server
-      #dest: /etc/openvpn
-      #remote_src: yes
-      #owner: root
-      #group: root
-      #mode: 0644
+       
        
   - name: Enable openvpn
     systemd:
@@ -143,3 +132,24 @@
       state: started
       enabled: yes
            
+       
+  #- name: copy config
+    #ansible.builtin.copy:
+      #src: "{{ item }}"
+      #dest: "/etc/openvpn/"
+      #owner: "root"
+      #mode: 0775
+    #with_fileglob:
+    #- "/home/bdn/git/otus-linux/net_vpn/certs/server/*"
+      
+      
+      
+      
+      
+      #template:
+      #src: /home/bdn/git/otus-linux/net_vpn/certs/server
+      #dest: /etc/openvpn
+      #remote_src: yes
+      #owner: root
+      #group: root
+      #mode: 0644

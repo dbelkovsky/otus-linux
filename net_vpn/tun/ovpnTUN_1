@@ -91,6 +91,11 @@
       flush: yes
     with_items: [ 'INPUT', 'OUTPUT', 'PREROUTING', 'POSTROUTING' ]
      
+  - name: Masquareding
+    raw: 'sudo iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE ; sudo service iptables save'   
+     
+     
+     
   #- name: Save current state of the firewall in system file
     #ansible.builtin.command: service iptables save
  
@@ -104,12 +109,20 @@
        
   - name: copy config
     template:
-      src: /home/bdn/git/otus-linux/net_vpn/conf/ras-server/server.conf
+      src: /home/bdn/git/otus-linux/net_vpn/conf/server/server.conf
       dest: /etc/openvpn/server.conf
       owner: root
       group: root
       mode: 0775
-         
+  
+  - name: copy config
+    template:
+      src: /home/bdn/git/otus-linux/net_vpn/conf/server/ccd/client
+      dest: /etc/openvpn/ccd/client
+      owner: root
+      group: root
+      mode: 0775
+      
   - name: copy config
     ansible.builtin.copy:
       src: "{{ item }}"
@@ -118,6 +131,19 @@
       mode: 0775
     with_fileglob:
     - "/home/bdn/git/otus-linux/net_vpn/certs/server/*"
+
+  - name: Enable openvpn
+    systemd:
+      name: openvpn@.server
+      enabled: true
+      masked: no
+        
+  - name: daemon started
+    systemd:
+      name: openvpn@.server
+      state: started
+      enabled: yes
+           
       
       
       
@@ -131,15 +157,3 @@
       #group: root
       #mode: 0644
        
-  - name: Enable openvpn
-    systemd:
-      name: openvpn@.server
-      enabled: true
-      masked: no
-        
-  - name: daemon started
-    systemd:
-      name: openvpn@.server
-      state: started
-      enabled: yes
-           
