@@ -1,0 +1,62 @@
+---
+- name: Setup
+  hosts: testRouter1
+  become: yes
+  
+
+  tasks:
+    - name: Add epel-release repo
+      yum:
+        name: epel-release
+        state: present
+        
+    - name: disable ssl for repo epel
+      lineinfile: 
+        dest: /etc/yum.repos.d/epel.repo
+        insertafter: 'enabled=1'
+        line: 'sslverify=0'
+        
+    - name: Put SELinux in permissive mode, logging actions that would be blocked.
+      selinux:
+        policy: targeted
+        state: permissive
+
+    - name: edit sysctl ip_forward
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: yes
+        state: present
+        reload: yes
+        
+    - name: Add iptables service
+      yum:
+        name: iptables-services
+        state: present
+        
+    - name: daemon started
+      systemd:
+        name: iptables
+        state: started
+        enabled: yes
+
+
+    - name: copy config
+      copy: 
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: '0755'
+      with_items:
+        - { src: 'testRouter1/ifcfg-eth0', dest: '/etc/sysconfig/network-scripts/' }
+        - { src: 'testRouter1/ifcfg-eth1', dest: '/etc/sysconfig/network-scripts/' }
+        - { src: 'testRouter1/ifcfg-vlan100', dest: '/etc/sysconfig/network-scripts/' }
+        - { src: 'testRouter1/iptables', dest: '/etc/sysconfig/' }
+      notify:
+      - restart server
+      
+  handlers:
+  - name: restart server
+    reboot:
+      reboot_timeout: 120

@@ -1,0 +1,53 @@
+---
+- name: Setup
+  hosts: centralRouter
+  become: yes
+  
+  
+  tasks:
+    - name: Add epel-release repo
+      yum:
+        name: epel-release
+        state: present
+        
+    - name: disable ssl for repo epel
+      lineinfile: 
+        dest: /etc/yum.repos.d/epel.repo
+        insertafter: 'enabled=1'
+        line: 'sslverify=0'
+        
+    - name: Put SELinux in permissive mode, logging actions that would be blocked.
+      selinux:
+        policy: targeted
+        state: permissive
+
+    - name: edit sysctl ip_forward
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: yes
+        state: present
+        reload: yes
+
+
+    - name: copy config
+      copy: 
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: '0755'
+      with_items:
+        - { src: 'centralRouter/ifcfg-eth0', dest: '/etc/sysconfig/network-scripts/' }
+        - { src: 'centralRouter/ifcfg-eth1', dest: '/etc/sysconfig/network-scripts/' }
+        - { src: 'centralRouter/ifcfg-eth2', dest: '/etc/sysconfig/network-scripts/' } 
+        - { src: 'centralRouter/ifcfg-eth3', dest: '/etc/sysconfig/network-scripts/' } 
+        - { src: 'centralRouter/ifcfg-eth4', dest: '/etc/sysconfig/network-scripts/' } 
+        - { src: 'centralRouter/ifcfg-bond0', dest: '/etc/sysconfig/network-scripts/' }
+      notify:
+      - restart server
+      
+  handlers:
+  - name: restart server
+    reboot:
+      reboot_timeout: 120

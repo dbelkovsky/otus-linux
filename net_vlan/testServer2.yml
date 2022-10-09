@@ -1,0 +1,35 @@
+---
+- name: Setup
+  hosts: testServer2
+  become: yes
+  
+  
+  tasks:
+    - name: Add epel-release repo
+      yum:
+        name: epel-release
+        state: present
+        
+    - name: disable ssl for repo epel
+      lineinfile: 
+        dest: /etc/yum.repos.d/epel.repo
+        insertafter: 'enabled=1'
+        line: 'sslverify=0'
+        
+    - name: copy config
+      copy: 
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: '0755'
+      with_items:
+        - { src: 'testServer2/ifcfg-eth0', dest: '/etc/sysconfig/network-scripts/' }
+        - { src: 'testServer2/ifcfg-vlan200', dest: '/etc/sysconfig/network-scripts/' }
+      notify:
+      - restart server
+      
+  handlers:
+  - name: restart server
+    reboot:
+      reboot_timeout: 120
