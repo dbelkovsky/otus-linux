@@ -1,0 +1,54 @@
+---
+- name: Playbook to configure IPA servers
+  hosts: server.test.local
+  become: true
+  vars:
+    ipaadmin_user: admin
+    ipadm_password: qwe!23asd
+    ipaadmin_password: qwe!23asd
+    ipaserver_domain: test.local
+    ipaserver_realm: TEST.LOCAL
+    ipaserver_install_packages: true
+    ipaserver_setup_firewalld: false
+    ipaserver_setup_dns: true
+    ipaserver_forwarders: 8.8.4.4
+    ipaserver_no_ui_redirect: true
+   
+  pre_tasks:
+
+    - name: upgrade all packages
+      yum: name=* state=latest
+               
+    - name: change hosts
+      copy: 
+        src: hosts
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: '0644'
+        
+    - name: Set SELinux in permissive mode
+      selinux:
+        policy: targeted
+        state: permissive
+    
+  roles:
+  - role: ipaserver
+    state: present
+    
+  post_tasks:
+    - name: Add andy
+      ipa_user:
+        name: andy
+        state: present
+        givenname: andy
+        sn: andy
+        sshpubkey:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQComi4Re9DJjeTUGdyM6PDwbb6bzGk0uIoqbpy/Q4D9KqtoQhZUm+L+pgRFLMidnCm8xpfvhXiNARjlsS2HZ28tj7d950cn/o/UCioikKbhL1Xzh+XR95PXmyMEu4Wg6lT1UDfxnNCWRtVJsZE2jDQBPeFwF+sSRd/DKBX0cVR3j4fRfkqwVLSBU9b3t/GaEKryir2MuAvz3uNOR/W9a6ClfFHi88uO/rW2Ro60tpm/20jLgGG2hBbd+4SynTs3FnYbECo8SJcc56faxMWo8dTIk60UzROsU6rL969qiq0Toq4G83V8XLs0Cd9Nzu8zvdZDlG5WDv1AMuEbNVrshy8N andy
+        password: qwe!23asd
+        krbpasswordexpiration:  20220121182022
+        ipa_host: server.test.local
+        ipa_user: admin
+        ipa_pass: qwe!23asd
+
+    

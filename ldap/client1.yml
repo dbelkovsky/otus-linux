@@ -1,0 +1,58 @@
+---
+- name: Playbook to configure IPA clients with username/password
+  hosts: client1.test.local
+  become: true
+  vars:
+    ipaclient_allow_repair: yes
+    ipaclient_domain: test.local
+    ipaclient_realm: TEST.LOCAL
+    ipaclient_extraargs: [ '--kinit-attempts=3', '--mkhomedir']
+    ipaadmin_principal: admin
+    ipaadmin_password: qwe!23asd
+    ipaclient_mkhomedir: yes
+    ipaservers: server.test.local
+
+  pre_tasks:
+      
+    - name: upgrade all packages
+      yum: name=* state=latest
+        
+    - name: change dns
+      lineinfile: 
+        dest: /etc/resolv.conf
+        regexp: "{{ item.regexp }}" 
+        line: "{{ item.line }}"
+        backrefs: yes
+      with_items:
+        - { regexp: '^nameserver', line: 'nameserver 192.168.50.10' }
+
+    - name: change dns
+      copy: 
+        src: no-dns.conf
+        dest: /etc/NetworkManager/conf.d/no-dns.conf
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+      - restart NetworkManager
+
+      
+    - name: change hosts
+      copy: 
+        src: hosts
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: '0644'
+
+
+  roles:
+  - role: ipaclient
+    state: present
+
+
+  handlers:
+  - name: restart NetworkManager
+    service:
+      name: NetworkManager
+      state: restarted
