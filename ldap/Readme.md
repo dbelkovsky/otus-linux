@@ -24,10 +24,6 @@ LDAP
  ![Image 3](https://raw.githubusercontent.com/marozov/ldap/master/screenshots/sudo.png) 
 
 
-
-## Как запустить:
- - git clone git@github.com:marozov/ldap.git && cd ldap && vagrant up
-
 ## Проверка работоспособности:
  - После выполнения vagrant up, необходимо в /etc/hosts на хосте добавить запись 192.168.50.10 server.test.local (это необходимо чтобы зайти на сервер через веб-интерфейс) 
 
