@@ -51,4 +51,4 @@ START SLAVE;
 ```
 * * *
 результат
-![Иллюстрация к проекту](https://github.com/marozov/mysql/blob/master/scr1.png)
+![Иллюстрация к проекту](https://github.com/dbelkovsky/otus-linux/blob/master/mysql/scr1.png)
