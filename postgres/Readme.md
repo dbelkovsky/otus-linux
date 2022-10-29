@@ -17,17 +17,17 @@ PostgreSQL
 
 1. Master
 
-![Image 1](https://github.com/dbelkovsky/otus-linux/blob/master/screenshots/postgresql-master.png)
+![Image 1](https://github.com/dbelkovsky/otus-linux/blob/master/postgres/screenshots/postgresql-master.png)
 
 Поначалу в лог файле ```/var/lib/pgsql/11/data/log/postgresql-*.log``` могут быть ошибки, но они пройдут после развертывания серверов.
 
-![Image 2](https://github.com/dbelkovsky/otus-linux/blob/master/screenshots/master-log.png)
+![Image 2](https://github.com/dbelkovsky/otus-linux/blob/master/postgres/screenshots/master-log.png)
 
 2. Slave
 
-![Image 3](https://github.com/dbelkovsky/otus-linux/blob/master/screenshots/postgresql-slave.png)
+![Image 3](https://github.com/dbelkovsky/otus-linux/blob/master/postgres/screenshots/postgresql-slave.png)
 
-![Image 4](https://github.com/dbelkovsky/otus-linux/blob/master/screenshots/slave-log.png)
+![Image 4](https://github.com/dbelkovsky/otus-linux/blob/master/postgres/screenshots/slave-log.png)
 
 3. Backup
 
@@ -175,7 +175,7 @@ Status of streaming clients for server 'master':
      Started at      : 2020-08-10 21:33:02.542353+00:00
      Sent LSN   : 0/80000C8 (diff: 0 B)
      Write LSN  : 0/80000C8 (diff: 0 B)
-     Flush LSN  : 0/8000000 (diff: -200 B)
+     Flush LSN  : 0/8000000 (diff: -200 B){htyjdsqw 
 ```
 
 ### Создание БД:
@@ -188,4 +188,3 @@ Status of streaming clients for server 'master':
     \c testDB
     CREATE TABLE users (id serial PRIMARY KEY, name VARCHAR (255) UNIQUE NOT NULL);
     INSERT INTO users (name) values ('testname');
-```
