@@ -1,0 +1,11 @@
+[Unit]
+Description=Django
+
+[Service]
+Type=simple
+WorkingDirectory=/root/django-helloworld
+ExecStart=/bin/python3  manage.py runserver
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

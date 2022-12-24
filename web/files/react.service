@@ -1,0 +1,11 @@
+[Unit]
+Description=Go
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/root/react-helloworld
+ExecStart=/bin/npm start
+
+[Install]
+WantedBy=multi-user.target
