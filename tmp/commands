@@ -1,0 +1,156 @@
+#!/bin/bash
+
+sudo -i
+
+1  df -Th
+    2  lsblk
+    3  pvcreate /dev/sdb
+    4  vgcreate otus /dev/sdb
+    5  lvcreate -l +80%FREE -n test otus
+    6  lvs -v otus |grep 'PV Name'
+    7  vgs -v otus |grep 'PV Name'
+    8  vgdisplay -v otus |grep 'PV Name'
+    9  lvdisplay /dev/otus/test
+   10  vgs
+   11  lvs
+   12  lvcreate -L100M -n small otus
+   13  lvs
+   14  mkfs.ext4 /dev/otus/test 
+   15  mkdir /data
+   16  mount /dev/otus/test /data
+   17  mount |grep /data
+   18  pvcreate /dev/sdc
+   19  vgextend otus /dev/sdc
+   20  vgdisplay -v otus |grep 'PV Name'
+   21  vgs
+   22  dd if=/dev/zero of=/data/test.log bs=1M count 3000 status=progress
+   23  dd if=/dev/zero of=/data/test.log bs=1M count=3000 status=progress
+   24  df -Th
+   25  lvextend -l +80%FREE /dev/otus/test
+   26  lvs /dev/otus/test 
+   27  df -Th
+   28  df -Th /data/
+   29  resize2fs /dev/otus/test 
+   30  df -Th /data/
+   31  umount /data/
+   32  mount |grep /data
+   33  resize2fs /dev/otus/test 1G
+   34  e2fsck -yf /dev/otus/test 
+   35  resize2fs /dev/otus/test 1G
+   36  lvreduce /dev/otus/test -L 1G
+   37  mount /dev/otus/test /data/
+   38  dmesg
+   39  mount -i /dev/otus/test /data/
+   40  mount --help
+   41  history
+
+   
+   
+   
+   
+      1  pvcreate /dev/sdb
+    2  vgcreate otus /dev/sdb
+    3  lvcreate -l +80%FREE -n test otus
+    4  vgdisplay  -v otus |grep 'PV Name'
+    5  lvdisplay /dev/otus/test 
+    6  lvcreate -L 100M -n small otus
+    7  lvs
+    8  mkfs.ext4 /dev/otus/test 
+    9  mkdir /data
+   10  mount /dev/otus/test /data/
+   11  mount | grep data
+   12  pvcreate /dev/sdc
+   13  vgextend otus /dev/sdc
+   14  vgdisplay -v otus |grep 'PV'
+   15  vgdisplay -v otus |grep 'PV N'
+   16  vgs
+   17  dd if=/dev/zero of=/data/test.log bs=1M count=2000 status=progress
+   18  df -Th /data/
+   19  lvextend -l +40%FREE /dev/otus/test
+   20  lvs /dev/otus/test 
+   21  df -Th /data/
+   22* resize
+   23  resize2fs /dev/otus/test 
+   24  df -Th /data/
+   25  umount  /data/
+   26  e2fsck -fy /dev/otus/test 
+   27  lvs
+   28  vgs
+   29  resize2fs /dev/otus/test 1G
+   30  resize2fs /dev/otus/test 10G
+   31  lvreduce /dev/otus/test -L 10G
+   32  mount /dev/otus/test /data/
+   33  df -Th /data/
+   34  lvs /dev/otus/test 
+   35  lvcreate -
+   36  lvcreate -L 500M -s -n test-snap /dev/otus/test
+   37  vgs -o +lv_size,lv_name | grep test
+   38  lsblk
+   39  mkdir /data-snap
+   40  mount /dev/otus/test-snap /data-snap
+   41  ll /data-snap
+   42  umount /data-snap
+   43  rm /data/test.log 
+   44  umount /data
+   45  lvconvert --megre /dev/otus/test-snap 
+   46  lvconvert --merge /dev/otus/test-snap 
+   47  mount /dev/otus/test /data
+   48  ll /data
+   49  pvcreate /dev/sd{d,e}
+   50  vgcreate vg0 /dev/sd{d,e}
+   51  lvcreate -l +80%FREE -m1 -n mirror vg0 
+   52  lvs
+   53  history 
+[root@lvm ~]# 
+
+
+
+
+  1  grub2-mkconfig -0 /boot/grub2/grub.cfg
+    2  grub2-mkconfig -o /boot/grub2/grub.cfg
+    3  for i in /proc/ /sys/ /dev/ /run/ /boot/; do mount --bind $i /mnt/$i; done
+    4  grub2-mkconfig -o /boot/grub2/grub.cfg
+    5  chroot /mnt/
+    6  exit
+    7  grub2-mkconfig -o /boot/grub2/grub.cfg
+    8  cd /boot ; for i in `ls initramfs-*img`; do dracut -v $i `echo $i|sed "s/initramfs-//g;
+    9  s/.img//g"` --force; done
+   10  vi /boot/grub2/grub.cfg 
+   11  reboot
+   12  exit
+   13  grub2-mkconfig -o /boot/grub2/grub.cfg
+   14  cd /boot ; for i in `ls initramfs-*img`; do dracut -v $i `echo $i|sed "s/initramfs-//g;
+   15  s/.img//g"` --force; done
+   16  pvcreate /dev/sdc /dev/sdd
+   17  vgcreate vg_var /dev/sdc /dev/sdd
+   18  lvcreate -L 950M -m1 -n vl_var vg_var
+   19  mkfs.ext4 /dev/vg_var/lv_var
+   20  mkfs.ext4 /dev/vg_var/vl_var
+   21  mount /dev/vg_var/vl_var /mnt
+   22  cp -aR /var/* /mnt/ #rsync -avHPSAX /var/ /mnt/
+   23  mkdir  /tmp/oldvar && mv /var/* /tmp/oldvar
+   24  echo "`blkid | grep var: | awk '{print $2}'` /var ext4 defaults 0 0" >> /etc/fstab
+   25  exit
+   26  lvremove /dev/vg_root/lv_root
+   27  vgremove /dev/vg_root
+   28  pvremove /dev/sdb
+   29  lsblk
+   30  lvcreate -n LogVol_Home -L 2G /dev/VolGroup00
+   31  mkfs.xfs /dev/VolGroup00/LogVol_Home 
+   32  mount /dev/VolGroup00/LogVol_Home /mnt
+   33  cp -aR /home/* /mnt/
+   34  rm -rf /home/*
+   35  umount /mnt/
+   36  mount /dev/VolGroup00/LogVol_Home /home/
+   37  echo "`blkid | grep Home | awk '{print $2}'` /home xfs defaults 0 0" >> /etc/fstab
+   38  touch /home/file{1..20}
+   39   lvcreate -L 100MB -s -n home_snap /dev/VolGroup00/LogVol_Home
+   40   rm -f /home/file{11..20
+   41   rm -f /home/file{11..20}
+   42  ll /home/
+   43  umount /home
+   44  lvconvert --merge /dev/VolGroup00/home_snap 
+   45  mount /home
+   46  ll
+   47  ll /home
+   48  history 
