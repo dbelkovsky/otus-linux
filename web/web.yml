@@ -41,7 +41,7 @@
         
         
     - git:
-        repo: 'https://github.com/staybox/django-helloworld'
+        repo: 'https://github.com/dbelkovsky/otus-linux/tree/master/django-helloworld'
         dest: '/root/django-helloworld'
         force: yes
 
@@ -60,7 +60,7 @@
 
         
     - git:
-        repo: 'https://github.com/staybox/go-http-hello-world.git'
+        repo: 'https://github.com/dbelkovsky/otus-linux/tree/master/go-http-hello-world.git'
         dest: '/root/go-http-hello-world'
         force: yes
 
@@ -68,7 +68,7 @@
         
     - name: copy exe
       get_url: 
-        url: 'https://raw.githubusercontent.com/staybox/go-http-hello-world/master/hello_world/hello_world'
+        url: 'https://github.com/dbelkovsky/otus-linux/blob/master/go-http-hello-world/hello_world/hello_world'
         validate_certs: no
         dest: '/root/go-http-hello-world/hello_world/hello_world'
         owner: root
@@ -77,7 +77,7 @@
         
         
     - git:
-        repo: 'https://github.com/staybox/react-helloworld'
+        repo: 'https://github.com/dbelkovsky/otus-linux/tree/master/react-helloworld'
         dest: '/root/react-helloworld'
         force: yes
       notify:

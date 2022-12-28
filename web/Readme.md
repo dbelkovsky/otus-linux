@@ -15,9 +15,9 @@ nginx + java (tomcat/jetty/netty) + go + ruby
 
 ## В процессе сделано:
 Настроен Vagrantfile и плейбук ansible для развертки следующей конфигурации:
-- проект https://github.com/dbelkovsky/otus-linux/blob/master/web/django-helloworld c django висит на порту localhost:8000 и проксирутся nginx с порта 83
-- проект https://github.com/dbelkovsky/otus-linux/blob/master/web/go-http-hello-world с go висит на порту localhost:8800 и проксирутся nginx с порта 81
-- проект https://github.com/dbelkovsky/otus-linux/blob/master/web/react-helloworld с react висит на порту localhost:7777 и проксирутся nginx с порта 82
+- проект https://github.com/dbelkovsky/otus-linux/blob/master/django-helloworld c django висит на порту localhost:8000 и проксирутся nginx с порта 83
+- проект https://github.com/dbelkovsky/otus-linux/blob/master/go-http-hello-world с go висит на порту localhost:8800 и проксирутся nginx с порта 81
+- проект https://github.com/dbelkovsky/otus-linux/blob/master/react-helloworld с react висит на порту localhost:7777 и проксирутся nginx с порта 82
 
 
 1. GO
