@@ -11,7 +11,7 @@ Vagrant и Ansible работают по принципу Infrastructure as Code
 
 ### Схема:
 
-![Image 12](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/schema_project2.png)
+![Image 12](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/schema_project2.png)
 
 ### Состав проекта:
 
@@ -60,7 +60,7 @@ Vagrant и Ansible работают по принципу Infrastructure as Code
 
 2. HAProxy - проксирует пользовательские запросы. В проекте используется http, redis, MySQL проксирование (на balancer3 и balancer4 как запасное MySQL проксирование).
 
-![Image 1](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/haproxy-web.png)
+![Image 1](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/haproxy-web.png)
 
 3. Nginx - высокопроизводительный веб-сервер. Выделен в отдельно стоящую группу серверов, для более эффективного размазывания нагрузки. Сервер в данном случае сжимает траффик, на что тратяться дополнительные ресурсы процессора.
 
@@ -68,41 +68,41 @@ Vagrant и Ansible работают по принципу Infrastructure as Code
 
 5. ProxySQL - ПО, которое позволяет проксировать SQL запросы по группам серверов (группы записи, группы чтения, запасная группа записи). Следить за доступностью SQL серверов, и автоматически выводит и вводит в строй. Имеет свой командный интерфейс управления (аналогичен работе с обычным SQL инстансом). Умеет определять тип запроса и отправлять на нужные сервера. В данном случае используется 1 сервер для записи, несмотря на то что у нас в схеме 3 мастер сервера. Сделано для того чтобы избежать взаимных блокировок (DeadLock). В данном проекте ProxySQL является основным проксирующим средством SQL запросов.
 
-![Image 2](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/proxysql.png)
+![Image 2](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/proxysql.png)
 
-![Image 3](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/proxysql2.png)
+![Image 3](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/proxysql2.png)
 
 6. GlusterFS - кластерная файловая система. Образует файловый кластер для файлового хранилища (где хранятся файлы сайта). Все веб-сервера и сервера приложений имеют доступ к файловому хранилищу для того чтобы сайт работал. На веб-серверах и серверах приложений установлен клиент GlusterFS.
 
-![Image 4](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/gluster.png)
+![Image 4](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/gluster.png)
 
 7. Redis (6 версия) - NoSQL БД для хранения сессий и кэширования данных. В нашей схеме используется 1 мастер и 2 слэйва. В случае падения мастера, происходит переключение. За переключением следит Sentinel. Хранит данные в ОЗУ, за счет чего быстро записывает и отдает данные. Периодически сохраняет данные на диск.
 
-![Image 5](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/redis-cli.png)
+![Image 5](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/redis-cli.png)
 
-![Image 6](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/sentinel.png)
+![Image 6](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/sentinel.png)
 
 8. Percona Multi-Master MySQL - сервера БД, которые хранят данные сайта в таблицах. Каждый читает и записывает с/на каждого.
 
-![Image 7](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/percona.png)
+![Image 7](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/percona.png)
 
 Balancer3 и Balancer4 также могут проксировать SQL запросы, однако HAProxy не умеет понимать тип SQL запроса. Проксирование идет исходя из доступности нод.
 Также же на этих нодах проксируется Redis, в данном случае HAProxy определяет кто из нод мастер и записывает только на мастер.
 Как видно на изображении ниже, 2 Slave сервера redis помечены красным, это нормально, так как на них не отправляются запросы. Запись может выполняться только на мастер сервер. Также видно что настроено MySQL проксирование (как резервное, а также для демонстрации возможностей), исходя из настроек весов, запросы отправляются всегда на один сервер. 
 
-![Image 8](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/haproxy-redis.png)
+![Image 8](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/haproxy-redis.png)
 
 ### Веб-интерфейс сайта:
 
 ProxySQL использует порт 6033 для проксирования запросов сайта, и порт 6032 для администрирования.
 
-![Image 9](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/wp.png)
+![Image 9](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/wp.png)
 
 На слайде ниже предлагается создать файл конфигурации для связи с БД. Чтобы не создавать файл вручную нужно выставить на 2 файла права 777, но предоставлять такие права файлам не безопасно, поэтому мы создаем такой файл вручную. Права 750.
 
-![Image 10](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/wp3.png)
+![Image 10](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/wp3.png)
 
-![Image 11](https://raw.githubusercontent.com/staybox/otus_project/master/screenshots/wp2.png)
+![Image 11](https://github.com/dbelkovsky/otus-linux/blob/master/final/screenshots/wp2.png)
 
 ### Как запустить:
 
