@@ -1,0 +1,9 @@
+[Unit]
+Description=GlusterFS Mount
+
+[Service]
+Type=forking
+ExecStart=/bin/mount -a
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+[Unit]
+Description=KeepAlived timer on boot
+
+[Timer]
+OnBootSec=30
+Unit=keepalived.service
+
+[Install]
+WantedBy=multi-user.target

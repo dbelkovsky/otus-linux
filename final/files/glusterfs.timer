@@ -1,0 +1,9 @@
+[Unit]
+Description=Start GlusterFS Service On Boot
+
+[Timer]
+OnStartupSec=30
+Unit=glusterfs.service
+
+[Install]
+WantedBy=timers.target

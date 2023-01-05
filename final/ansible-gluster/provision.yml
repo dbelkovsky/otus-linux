@@ -1,0 +1,79 @@
+---
+- hosts: gluster
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - vars.yml
+  
+  roles:
+    - geerlingguy.firewall
+    - geerlingguy.glusterfs
+
+  tasks:
+    - name: Ensure Gluster brick and mount directories exist
+      file: "path={{ item }} state=directory mode=0775"
+      with_items:
+        - "{{ gluster_brick_dir }}"
+        - "{{ gluster_mount_dir }}"
+
+    - name: Configure Gluster volume
+      gluster_volume:
+        state: present
+        name: "{{ gluster_volume_name }}"
+        brick: "{{ gluster_brick_dir }}/{{ gluster_volume_name }}"
+        replicas: 3
+        cluster: "{{ groups.gluster | join(',') }}"
+        host: "{{ inventory_hostname }}"
+        force: yes
+        options:
+          {    
+           quick-read: 'on'
+          }
+      run_once: true
+
+    - name: Add user "nginx"  
+      user:
+        name: nginx
+        uid: 2000
+        shell: /sbin/nologin
+        append: yes
+        comment: "Nginx nologin user"
+        state: present
+      become: true
+  
+    - name: Ensure group nginx exists
+      group:
+        name: nginx
+        state: present
+        gid: 3000
+
+    - name: set settings
+      shell: |
+        hostname=`hostname`
+        if [[ "$hostname" == "glusterfs1" ]]; then  gluster volume set gv0 network.ping-timeout 5; gluster volume set gv0 cluster.quorum-type fixed; gluster volume set gv0 performance.quick-read on; gluster volume set gv0 cluster.quorum-count 1; gluster volume set gv0 storage.owner-uid 2000; gluster volume set gv0 storage.owner-gid 3000; fi
+      args:
+        warn: no
+        executable: /bin/bash
+
+    - name: Ensure Gluster volume is mounted
+      mount:
+        name: "{{ gluster_mount_dir }}"
+        src: "{{ inventory_hostname }}:/{{ gluster_volume_name }}"
+        fstype: glusterfs
+        opts: "defaults,_netdev"
+        state: mounted
+
+    - name: Check that the index.php wordpress file exists
+      stat:
+        path: /mnt/gluster/index.php
+      register: stat_result
+
+    - name: Unarchive a file that needs to be downloaded (added in 2.0)
+      when: 
+        - ansible_hostname == 'glusterfs1'
+        - not stat_result.stat.exists
+      shell: wget https://ru.wordpress.org/latest-ru_RU.zip -P /mnt/gluster/; unzip /mnt/gluster/latest-ru_RU.zip -d /mnt/gluster/ && rm -rf /mnt/gluster/latest-ru_RU.zip; cp -R /mnt/gluster/wordpress/* /mnt/gluster/; rm -rf /mnt/gluster/wordpress; chown -R nginx:nginx /mnt/gluster/*; chmod -R 750 /mnt/gluster/*
+      args:
+        warn: no
+

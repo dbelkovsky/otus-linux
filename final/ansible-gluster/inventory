@@ -1,0 +1,11 @@
+[gluster]
+192.168.10.44
+192.168.10.45
+192.168.10.46
+
+[gluster:vars]
+ansible_ssh_user=vagrant
+ansible_ssh_pass=vagrant
+#"ANSIBLE_SSH_ARGS": "-C -o ControlMaster=auto -o ControlPersist=60s -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+#ansible_ssh_private_key_file=~/.vagrant/machines/glusterfs1/virtualbox/private_key
+
