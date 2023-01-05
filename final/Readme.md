@@ -108,5 +108,5 @@ ProxySQL использует порт 6033 для проксирования з
 
 Ноды необходимо запускать в определенном порядке. Этот порядок отражен ниже.
 
-- ```git clone git@github.com:staybox/otus_project.git && cd otus_project && vagrant up percona1 percona2 percona3 redis1 redis2 redis3 balancer3 balancer4 glusterfs1 glusterfs2 glusterfs3 && export ANSIBLE_CONFIG=$(pwd)/ansible-gluster/ansible.cfg && ansible-playbook ansible-gluster/provision.yml && vagrant up backend1 backend2 web1 web2 balancer1 balancer2```
+- ```git clone git@github.com:dbelkovsky/otus-linux/final.git && cd final && vagrant up percona1 percona2 percona3 redis1 redis2 redis3 balancer3 balancer4 glusterfs1 glusterfs2 glusterfs3 && export ANSIBLE_CONFIG=$(pwd)/ansible-gluster/ansible.cfg && ansible-playbook ansible-gluster/provision.yml && vagrant up backend1 backend2 web1 web2 balancer1 balancer2```
 
